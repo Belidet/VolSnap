@@ -4,7 +4,6 @@ import android.content.Context
 import android.media.AudioManager
 import android.os.Handler
 import android.os.Looper
-import android.view.KeyEvent
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -61,22 +60,6 @@ class MainActivity : FlutterActivity() {
     private fun stopListening() {
         listening = false
         handler.removeCallbacks(volumeRunnable)
-    }
-
-    // Also intercept hardware key events for lower latency
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (listening) {
-            when (keyCode) {
-                KeyEvent.KEYCODE_VOLUME_UP -> {
-                    channel.invokeMethod("volumeUp", null)
-                    // Don't consume — allow volume to change (which is how we detect below too)
-                }
-                KeyEvent.KEYCODE_VOLUME_DOWN -> {
-                    channel.invokeMethod("volumeDown", null)
-                }
-            }
-        }
-        return super.onKeyDown(keyCode, event)
     }
 
     override fun onDestroy() {
